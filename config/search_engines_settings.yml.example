@@ -1,0 +1,17 @@
+# This is an example to set the different keys required to make run both engines
+# You should remove the .example extension for this file or
+# create another one with the same name with .yml extention like this: search_engines_settings.yml
+# The values here for settings keys [accessKey, cx, location] are examples,
+# you should put your owns values to avoid search engines services raise errors.
+#
+google:
+  accessKey: 9AIzaSyDwjW7P6zshP6vpHVa3RA5fYNwDfkyoZ_M
+  uri: https://customsearch.googleapis.com
+  path: /customsearch/v1
+  cx: 92ee24efa7bb102355
+
+bing:
+  accessKey: A90cceb8cf2f74446998792b154ab445d
+  uri: https://api.bing.microsoft.com
+  path: /v7.0/search
+  location: global

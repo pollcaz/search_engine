@@ -5,7 +5,7 @@ require 'json'
 module SearchEngines
   class Google
     MAX_START_NUMBER = 91 # Max value supported by google into an API with restrictions(free plan)
-    ATTRIBUTES_KEYS = %w[accessKey uri path cx].freeze
+    CONEXION_KEYS = %w[accessKey uri path cx].freeze
 
     attr_reader :errors, :str_uri
     attr_accessor :accessKey, :uri, :path, :cx
@@ -34,8 +34,7 @@ module SearchEngines
         response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
             http.request(request)
         end
-
-        response.body
+        service_error?(response.body) ? errors : response.body
       else
         errors
       end
@@ -47,8 +46,17 @@ module SearchEngines
 
     private
 
+    def service_error?(results)
+      recordset = JSON.parse(results)
+      return false unless recordset.keys.any?('error')
+
+      errors[:errors] = "#{recordset['error']['message']}"
+      errors[:code] = "INVALID_ARGUMENT_IN_SETTINGS"
+      true
+    end
+
     def set_attributes(file)
-      ATTRIBUTES_KEYS.each do |key|
+      CONEXION_KEYS.each do |key|
         if file[key].present?
           instance_variable_set("@#{key}", file[key])
         else

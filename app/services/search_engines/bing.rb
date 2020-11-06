@@ -4,8 +4,8 @@ require 'json'
 
 module SearchEngines
   class Bing
-    MAX_START_NUMBER = 73100000 # Max value supported by google into an API with restrictions(free plan)
-    ATTRIBUTES_KEYS = %w[accessKey uri path location].freeze
+    MAX_START_NUMBER = 999999999 # Max value supported by bing into an API with restrictions(free plan)
+    CONEXION_KEYS = %w[accessKey uri path location].freeze
 
     attr_reader :errors, :str_uri
     attr_accessor :accessKey, :uri, :path, :location
@@ -37,7 +37,7 @@ module SearchEngines
             http.request(request)
         end
 
-        response.body
+        service_error?(response.body) ? errors : response.body
       else
         errors
       end
@@ -49,8 +49,17 @@ module SearchEngines
 
     private
 
+    def service_error?(results)
+      recordset = JSON.parse(results)
+      return false unless recordset.keys.any?('error')
+
+      errors[:errors] = "#{recordset['error']['message']}"
+      errors[:code] = "INVALID_ARGUMENT_IN_SETTINGS"
+      true
+    end
+
     def set_attributes(file)
-      ATTRIBUTES_KEYS.each do |key|
+      CONEXION_KEYS.each do |key|
         if file[key].present?
           instance_variable_set("@#{key}", file[key])
         else

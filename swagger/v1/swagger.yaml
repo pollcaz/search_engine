@@ -1,0 +1,97 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1 Google & Bing Search Engines
+  version: v1
+schemes:
+- "https"
+- "http"
+paths:
+  /api/v1/search?engine={engine}&text={text}:
+    get:
+      summary: Returns Google, Bing or Both results from search
+      tags:
+      - Search Engines
+      parameters:
+      - name: engine
+        in: path
+        required: true
+        description: name of the search engine to use
+        example: google, bing, both
+        schema:
+          type: string
+      - name: text
+        in: path
+        required: true
+        description: what are you looking in your the search
+        schema:
+          type: string
+      - name: start_index
+        in: path
+        required: false
+        description: index to start to return the results from the current search
+        example: 31
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Search by Google, Bing or Both Engines
+          schema:
+            $ref: "#/definitions/engine_success_response"
+        '400':
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/bad_request"
+        '401':
+          description: Unauthorize
+          schema:
+            $ref: "#/definitions/bad_request"
+servers:
+- url: http://{defaultHost}
+  variables:
+    defaultHost:
+      default: localhost:3000
+definitions:
+  engine_success_response:
+    type: "object"
+    required:
+    - "engine"
+    - "recordmatches"
+    - "offset"
+    - "total"
+    - "items"
+    properties:
+      engine:
+        type: string
+      recordmatches:
+        type: integer
+        format: int32
+      offset:
+        type: integer
+        format: int32
+      total:
+        type: integer
+        format: int32
+      items:
+        type: "object"
+        properties:
+          index_order:
+            type: interger
+            format: int32
+          title:
+            type: string
+          link:
+            type: string
+          snippet:
+            type: string
+  bad_request:
+    type: "object"
+    required:
+    - "error"
+    - "code"
+    properties:
+      error:
+        type: string
+      code:
+        type: string
+

@@ -1,21 +1,24 @@
+# frozen_string_literal: true
+
 require 'net/https'
 require 'uri'
 require 'json'
 
 module SearchEngines
+  # Service to use Google search engine
   class Google
     MAX_START_NUMBER = 91 # Max value supported by google into an API with restrictions(free plan)
     CONEXION_KEYS = %w[accessKey uri path cx].freeze
 
-    attr_reader :errors, :str_uri
+    attr_reader :errors
     attr_accessor :accessKey, :uri, :path, :cx
 
-    def initialize()
+    def initialize
       @errors = { errors: [] }
       @setting = SearchEngines::Setting.new
 
       if @setting.errors[:errors].blank?
-        set_attributes(@setting.file['google'])
+        initialize_attributes(@setting.file['google'])
       else
         @errors = @setting.errors
       end
@@ -28,11 +31,11 @@ module SearchEngines
     # into the queries key we can find request & nextPage keys with the data related to handle this.
     def search(term, start_index = nil)
       if errors[:errors].blank?
-        uri = start_index.blank? ? URI(str_uri(term)) : URI(str_uri(term) + "&start=" + max_start_index(start_index).to_s)  
+        uri = start_index.blank? ? URI(str_uri(term)) : URI(str_uri_with_start(term, start_index))
         request = Net::HTTP::Get.new(uri)
 
-        response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
-            http.request(request)
+        response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
+          http.request(request)
         end
         service_error?(response.body) ? errors : response.body
       else
@@ -46,16 +49,20 @@ module SearchEngines
 
     private
 
+    def str_uri_with_start(term, start_index)
+      "#{str_uri(term)}&start=#{max_start_index(start_index).to_s}"
+    end
+
     def service_error?(results)
       recordset = JSON.parse(results)
       return false unless recordset.keys.any?('error')
 
-      errors[:errors] = "#{recordset['error']['message']}"
-      errors[:code] = "INVALID_ARGUMENT_IN_SETTINGS"
+      errors[:errors] = recordset['error']['message']
+      errors[:code] = 'INVALID_ARGUMENT_IN_SETTINGS'
       true
     end
 
-    def set_attributes(file)
+    def initialize_attributes(file)
       CONEXION_KEYS.each do |key|
         if file[key].present?
           instance_variable_set("@#{key}", file[key])
@@ -66,7 +73,7 @@ module SearchEngines
     end
 
     def str_uri(term)
-      @uri + @path + "?q=" + URI.escape(term) + "&cx=" + @cx + "&key=" + @accessKey
+      "#{@uri}#{@path}?q=#{URI.escape(term)}&cx=#{@cx}&key=#{@accessKey}"
     end
 
     def max_start_index(start_index)

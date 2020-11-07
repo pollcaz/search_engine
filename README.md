@@ -6,19 +6,28 @@ application up and running.
 Things you may want to cover:
 
 * Ruby version
+    2.6.6
+* Dependencies
+    bundle
 
-* System dependencies
+# API V1 -> Example how to use Google and Bing Search Engines
 
-* Configuration
+## Development Environment Setup
 
-* Database creation
+### On localhost
 
-* Database initialization
+For instructions on running Yello Enterprise via Docker, see [DOCKER.md](DOCKER.md)
 
-* How to run the test suite
+1. Create a folder for the app and clone the repo: `mkdir -p ~/apps && cd ~/apps && git clone https://github.com/pollcaz/search_engine.git`
 
-* Services (job queues, cache servers, search engines, etc.)
+2. Go into the directory : `cd ~/apps/search_engine`
 
-* Deployment instructions
+3. Install the gems `bundle install`
 
-* ...
+4. Rename search_engines_settings.yml.example to: `config/search_engines_settings.yml`
+
+5. Edit and put your owns credentials for each Search Engine into search_engines_settings.yml
+
+6. Start the server `rails s`
+
+7. Open a window in your browser `http://localhost:3000/api-docs` to see the Api documentation.

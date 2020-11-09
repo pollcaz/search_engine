@@ -1,0 +1,11 @@
+google:
+  accessKey:
+  uri: https://customsearch.googleapis.com
+  path: /customsearch/v1
+  cx:
+
+bing:
+  accessKey:
+  uri: https://api.bing.microsoft.com
+  path: /v7.0/search
+  location:

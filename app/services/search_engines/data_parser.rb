@@ -2,11 +2,12 @@ require 'json'
 
 module SearchEngines
   class DataParser
+    RECORD_KEYS = {
+      google: { title: 'title', link: 'link', snippet: 'snippet'},
+      bing:   { title: 'name', link: 'url', snippet: 'snippet'}
+    }.freeze
+    
     class << self
-      RECORD_KEYS = {
-        google: { title: 'title', link: 'link', snippet: 'snippet'},
-        bing:   { title: 'name', link: 'url', snippet: 'snippet'}
-      }.freeze
 
       def build_json_response(recordsets, offset = 0)
         {}.tap do |results|

@@ -1,0 +1,11 @@
+google:
+  accessKey: 9AIzaSyDwjW7P6zshP6vpHVa3RA5fYNwDfkyoZ_M
+  uri: https://customsearch.googleapis.com
+  path: /customsearch/v1
+  cx: 92ee24efa7bb102355
+
+bing:
+  accessKey: A90cceb8cf2f74446998792b154ab445d
+  uri: https://api.bing.microsoft.com
+  path: /v7.0/search
+  location: global

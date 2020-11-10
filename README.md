@@ -31,3 +31,8 @@ For instructions on running Yello Enterprise via Docker, see [DOCKER.md](DOCKER.
 6. Start the server `rails s`
 
 7. Open a window in your browser `http://localhost:3000/api-docs` to see the Api documentation.
+
+### How to run the specs
+* For all test run the next command: `bundle exec rspec spec`
+* Only for services: `bundle exec rspec spec/services`
+* Only for integration test: `bundle exec rspec spec/request`
